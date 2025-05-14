@@ -11,9 +11,6 @@ importers:
       '@fontsource/roboto':
         specifier: 5.2.5
         version: 5.2.5
-      '@mdi/font':
-        specifier: 7.4.47
-        version: 7.4.47
       vue:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.8.3)
@@ -21,6 +18,9 @@ importers:
         specifier: ^3.8.1
         version: 3.8.4(typescript@5.8.3)(vite-plugin-vuetify@2.1.1)(vue@3.5.13(typescript@5.8.3))
     devDependencies:
+      '@mdi/font':
+        specifier: 7.4.47
+        version: 7.4.47
       '@tsconfig/node22':
         specifier: ^22.0.0
         version: 22.0.1
