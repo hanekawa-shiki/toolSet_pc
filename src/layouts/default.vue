@@ -4,12 +4,20 @@
     <template #append>
       <v-menu open-on-hover transition="scale-transition">
         <template #activator="{ props }">
+          <v-btn class="btn-style" v-bind="props" @click="$router.push('/')">
+            <v-icon icon="mdi-home" />主页
+          </v-btn>
+        </template>
+      </v-menu>
+      <v-divider class="mx-2 mg-auto" vertical />
+      <v-menu open-on-hover transition="scale-transition">
+        <template #activator="{ props }">
           <v-btn class="btn-style" v-bind="props">
             加解码<v-icon icon="mdi-chevron-down" />
           </v-btn>
         </template>
-        <v-list>
-          <v-list-item v-for="(item, index) in items" :key="index" :value="index">
+        <v-list density="compact">
+          <v-list-item v-for="(item, index) in items" :key="index" density="compact" @click="$router.push(item.path)">
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
         </v-list>
@@ -46,5 +54,9 @@
 
 .btn-style {
   color: rgba(0, 0, 0, 0.6);
+}
+
+.main-style {
+  margin: 0 auto;
 }
 </style>
