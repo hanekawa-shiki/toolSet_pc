@@ -22,7 +22,7 @@
           </v-list-item>
         </v-list>
       </v-menu>
-      <v-divider class="mx-2 mg-auto" vertical />
+      <!-- <v-divider class="mx-2 mg-auto" vertical /> -->
     </template>
   </v-toolbar>
   <v-main class="main-style" max-width="1200px" width="1200px">

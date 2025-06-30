@@ -1,1 +1,1 @@
-export * from './torrent2magnet';
+export * from './torrent2magnet'

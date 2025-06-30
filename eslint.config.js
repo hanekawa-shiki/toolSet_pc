@@ -1,8 +1,3 @@
-import vuetify from 'eslint-config-vuetify';
+import vuetify from 'eslint-config-vuetify'
 
-export default vuetify({
-  vue: true,
-  ts: {
-    preset: 'all'
-  }
-})
+export default vuetify()
