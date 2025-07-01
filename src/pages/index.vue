@@ -1,5 +1,5 @@
 <template>
-  <HelloWorld />
+  <menu-list />
 </template>
 
 <script lang="ts" setup>
