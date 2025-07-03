@@ -1,6 +1,6 @@
 <template>
   <v-container class="fill-height" max-width="900">
-    <v-btn @click="$router.push('/torrent2magnet')">torrent 转 magnet</v-btn>
+    <h1 style="text-align: center;flex: 1;">广告位招租</h1>
   </v-container>
 </template>
 
