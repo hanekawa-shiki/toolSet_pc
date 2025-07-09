@@ -1,39 +1,44 @@
-<template>
-  <n-space vertical size="large">
-    <n-layout>
-      <n-layout-header>top-nav</n-layout-header>
-      <n-layout has-sider>
-        <n-layout-sider content-style="padding: 24px;">
-          sider
-        </n-layout-sider>
-        <n-layout-content content-style="padding: 24px;">
-          <RouterView />
-        </n-layout-content>
-      </n-layout>
-      <n-layout-footer>footer</n-layout-footer>
-    </n-layout>
-  </n-space>
-
-</template>
-
 <script setup lang="ts">
-  defineOptions({
-    name: 'DefaultLayout'
-  })
+defineOptions({
+  name: 'DefaultLayout',
+})
 </script>
 
+<template>
+  <n-layout class="layout">
+    <n-layout-header class="header" bordered>
+      header
+    </n-layout-header>
+    <n-layout has-sider>
+      <n-layout-sider
+        class="sider" :native-scrollbar="false" collapse-mode="width" :collapsed-width="120" :width="240"
+        show-trigger="arrow-circle" content-style="padding: 24px;" bordered
+      >
+        sider
+      </n-layout-sider>
+      <n-layout-content class="content" :native-scrollbar="false">
+        <RouterView />
+      </n-layout-content>
+    </n-layout>
+  </n-layout>
+</template>
+
 <style scoped>
-.n-layout-header,
-.n-layout-footer {
-  background: rgba(128, 128, 128, 0.2);
-  padding: 24px;
+.layout {
+  height: 100vh;
 }
 
-.n-layout-sider {
-  background: rgba(128, 128, 128, 0.3);
+.header {
+  height: 64px;
 }
 
-.n-layout-content {
-  background: rgba(128, 128, 128, 0.4);
+.sider {
+  height: calc(100vh - 64px);
+  overflow: hidden;
+}
+
+.content {
+  height: calc(100vh - 64px);
+  overflow: hidden;
 }
 </style>

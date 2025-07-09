@@ -1,15 +1,15 @@
 {
   "name": "toolset",
+  "type": "module",
   "version": "2.0.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
-    "lint": "eslint . --fix"
+    "lint": "eslint --fix"
   },
   "dependencies": {
     "pinia": "3.0.3",
@@ -17,28 +17,37 @@
     "vue-router": "4.5.1"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "4.16.2",
     "@tsconfig/node22": "22.0.2",
-    "@types/node": "24.0.10",
+    "@types/node": "24.0.12",
     "@vitejs/plugin-vue": "6.0.0",
-    "@vue/eslint-config-typescript": "14.6.0",
     "@vue/tsconfig": "0.7.0",
     "eslint": "9.30.1",
-    "eslint-plugin-vue": "~10.3.0",
+    "eslint-plugin-format": "1.0.1",
+    "eslint-plugin-vuejs-accessibility": "2.4.1",
     "jiti": "2.4.2",
+    "lint-staged": "16.1.2",
     "lxgw-wenkai-screen-web": "1.520.0",
     "naive-ui": "2.42.0",
     "normalize.css": "8.0.1",
     "npm-run-all2": "8.0.4",
+    "simple-git-hooks": "2.13.0",
     "typescript": "~5.8.3",
     "unplugin-auto-import": "19.3.0",
     "unplugin-vue-components": "28.8.0",
     "unplugin-vue-router": "0.14.0",
     "vite": "7.0.3",
-    "vite-plugin-node-polyfills": "^0.24.0",
+    "vite-plugin-node-polyfills": "0.24.0",
     "vite-plugin-pages": "0.33.1",
     "vite-plugin-vue-devtools": "7.7.7",
     "vite-plugin-vue-layouts": "0.11.0",
     "vite-plugin-vue-layouts-next": "1.0.0",
     "vue-tsc": "3.0.1"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
+  },
+  "lint-staged": {
+    "*": "eslint --fix"
   }
 }
