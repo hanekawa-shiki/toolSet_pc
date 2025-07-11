@@ -4,11 +4,23 @@ export default antfu({
   ignores: [
     'node_modules/',
     'pnpm-lock.yaml',
-    // ...globs
   ],
   formatters: true,
   vue: {
     a11y: true,
+    overrides: {
+      'vue/max-attributes-per-line': [
+        'error',
+        {
+          singleline: {
+            max: 1,
+          },
+          multiline: {
+            max: 1,
+          },
+        },
+      ],
+    },
   },
   typescript: {
     tsconfigPath: './tsconfig.json',

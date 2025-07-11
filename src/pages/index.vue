@@ -5,9 +5,13 @@ defineOptions({
 </script>
 
 <template>
-  <div>
+  <div class="demo">
     content-demo
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.demo {
+  height: 200vh;
+}
+</style>
