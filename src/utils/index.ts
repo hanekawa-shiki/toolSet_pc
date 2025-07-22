@@ -1,0 +1,1 @@
+export { parseTorrentFileToMagnet } from './parseTorrentFileToMagnet'

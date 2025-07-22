@@ -19,9 +19,12 @@
   "devDependencies": {
     "@antfu/eslint-config": "4.17.0",
     "@tsconfig/node22": "22.0.2",
+    "@types/bencode": "2.0.4",
     "@types/node": "24.0.15",
+    "@vicons/ionicons5": "0.13.0",
     "@vitejs/plugin-vue": "6.0.0",
     "@vue/tsconfig": "0.7.0",
+    "bencode": "4.0.0",
     "eslint": "9.31.0",
     "eslint-plugin-format": "1.0.1",
     "eslint-plugin-vuejs-accessibility": "2.4.1",

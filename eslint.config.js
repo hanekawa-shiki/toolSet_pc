@@ -7,7 +7,6 @@ export default antfu({
   ],
   formatters: true,
   vue: {
-    a11y: true,
     overrides: {
       'vue/max-attributes-per-line': [
         'error',
