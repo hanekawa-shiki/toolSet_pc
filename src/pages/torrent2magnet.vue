@@ -8,6 +8,8 @@ import {
 import { useMessage } from 'naive-ui'
 import { parseTorrentFileToMagnet } from '@/utils'
 
+type MessageType = 'success' | 'error' | 'warning' | 'info'
+
 defineOptions({
   name: 'Torrent2Magnet',
 })
@@ -79,7 +81,7 @@ async function clearAll() {
   magnetLinks.value = []
 }
 
-function setMsg({ msg, type }: { msg: string, type: string }): void {
+function setMsg({ msg, type }: { msg: string, type: MessageType }): void {
   message[type](
     msg,
     {
