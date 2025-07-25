@@ -4,13 +4,14 @@ import {
   Magnet as MagnetIcon,
 } from '@vicons/ionicons5'
 import { NIcon } from 'naive-ui'
-import { RouterLink, useRouter } from 'vue-router'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 
 defineOptions({
   name: 'DefaultLayout',
 })
 
 const router = useRouter()
+const route = useRoute()
 
 const collapsed = ref(false)
 const activeKey = ref<string | null>(null)
@@ -38,6 +39,20 @@ const menuOptions: MenuOption[] = [
     icon: renderIcon(MagnetIcon),
   },
 ]
+
+const layoutScroll = useTemplateRef('layoutScroll')
+watch(
+  () => route.fullPath,
+  () => {
+    nextTick(() => {
+      layoutScroll.value?.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth',
+      })
+    })
+  },
+)
 </script>
 
 <template>
@@ -82,7 +97,14 @@ const menuOptions: MenuOption[] = [
       >
         header
       </n-layout-header>
-      <RouterView />
+      <n-layout-content
+        ref="layoutScroll"
+        class="content-inner"
+        :native-scrollbar="false"
+        content-style="padding: 16px 16px 0 16px;"
+      >
+        <RouterView />
+      </n-layout-content>
     </n-layout-content>
   </n-layout>
 </template>
@@ -98,6 +120,7 @@ const menuOptions: MenuOption[] = [
   position: sticky;
   top: 0;
   z-index: 10;
+  width: 100%;
 }
 
 .sider {
@@ -116,6 +139,11 @@ const menuOptions: MenuOption[] = [
 }
 
 .content {
-  height: 100%;
+  flex: 1;
+}
+.content-inner {
+  height: calc(100vh - 64px);
+  width: 100%;
+  overflow: auto;
 }
 </style>

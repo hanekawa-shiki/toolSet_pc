@@ -6,12 +6,13 @@ defineOptions({
 
 <template>
   <div class="demo">
-    content-demo
+    home-page
   </div>
 </template>
 
 <style scoped>
 .demo {
   height: 200vh;
+  width: 200vw;
 }
 </style>

@@ -1,7 +1,7 @@
 import type { Buffer } from 'node:buffer'
 
 export interface DecodedTorrent {
-  'info'?: { // <--- 这里添加了问号
+  'info'?: {
     'name'?: Buffer
     'piece length'?: number
     'pieces'?: Buffer
