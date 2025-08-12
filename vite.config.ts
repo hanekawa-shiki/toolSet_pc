@@ -12,10 +12,12 @@ import { defineConfig } from 'vite'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import Layouts from 'vite-plugin-vue-layouts'
+import { buildDatePlugin } from './plugins/vite-plugin-build-date'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
+    buildDatePlugin(),
     nodePolyfills(),
     VueRouter({
       dts: 'src/typed-router.d.ts',
