@@ -35,7 +35,19 @@ async function parseTorrentFileToMagnet(file: File): Promise<string> {
     const infoEncoded = bencode.encode(infoDict)
 
     // 3. 计算 info hash (SHA-1)
-    const hashBuffer = await crypto.subtle.digest('SHA-1', infoEncoded)
+    // const hashBuffer = await crypto.subtle.digest('SHA-1', infoEncoded)
+    // 1. 获取 info hash (SHA-1)
+    // 确保 infoEncoded 是一个标准的 Uint8Array，而不是可能使用 SharedArrayBuffer 的 Buffer
+    const infoEncodedUint8Array = new Uint8Array(infoEncoded)
+
+    // 2. 将 Uint8Array 转换为 ArrayBuffer
+    // 为了确保与 crypto.subtle.digest 的兼容性
+    const infoEncodedArrayBuffer = infoEncodedUint8Array.buffer.slice(
+      infoEncodedUint8Array.byteOffset,
+      infoEncodedUint8Array.byteOffset + infoEncodedUint8Array.byteLength,
+    )
+    // 3. 计算 SHA-1 哈希
+    const hashBuffer = await crypto.subtle.digest('SHA-1', infoEncodedArrayBuffer)
     const infoHash = arrayBufferToHex(hashBuffer)
 
     // 4. 构建 Magnet 链接
