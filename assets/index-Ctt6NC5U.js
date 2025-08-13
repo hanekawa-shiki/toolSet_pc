@@ -1,1 +1,0 @@
-import{n as e,aM as o,aN as a}from"./index-5Ibu_2it.js";import{_ as n}from"./_plugin-vue_export-helper-DlAUqK2U.js";const t={class:"demo"},s=e({name:"IndexPage",__name:"index",setup(_){return(c,r)=>(a(),o("div",t," home-page "))}}),p=n(s,[["__scopeId","data-v-88d7f74e"]]);export{p as default};
