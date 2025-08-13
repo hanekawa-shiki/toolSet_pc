@@ -89,7 +89,6 @@ watch(
     </n-layout-sider>
     <n-layout-content
       class="content"
-      :native-scrollbar="false"
     >
       <n-layout-header
         bordered
@@ -100,10 +99,11 @@ watch(
       <n-layout-content
         ref="layoutScroll"
         class="content-inner"
-        :native-scrollbar="false"
-        content-style="padding: 16px 16px 0 16px;"
+        content-style="width: 100%;"
       >
-        <RouterView />
+        <div class="router-inner">
+          <RouterView />
+        </div>
       </n-layout-content>
     </n-layout-content>
   </n-layout>
@@ -120,7 +120,7 @@ watch(
   position: sticky;
   top: 0;
   z-index: 10;
-  width: 100%;
+  /* width: calc(100% - 240px); */
 }
 
 .sider {
@@ -141,9 +141,12 @@ watch(
 .content {
   flex: 1;
 }
-.content-inner {
-  height: calc(100vh - 64px);
-  width: 100%;
-  overflow: auto;
+
+.router-inner {
+  padding: 16px 16px 0 16px;
+}
+
+:deep(.n-layout .n-layout-scroll-container) {
+  overflow-x: auto;
 }
 </style>

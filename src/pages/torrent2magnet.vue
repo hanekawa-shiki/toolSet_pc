@@ -124,6 +124,7 @@ function setMsg({ msg, type }: { msg: string, type: MessageType }): void {
       <n-list-item
         v-for="(file, index) in selectedFiles"
         :key="index"
+        class="list-item-inner"
       >
         <template #prefix>
           <n-button
@@ -235,6 +236,7 @@ function setMsg({ msg, type }: { msg: string, type: MessageType }): void {
   margin-top: 24px;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 .list-icon {
   font-size: 24px;
@@ -243,6 +245,7 @@ function setMsg({ msg, type }: { msg: string, type: MessageType }): void {
 }
 .list-item {
   flex: 1;
+  width: calc(50% - 12px);
 }
 .list-item ::v-deep(.n-list-item__prefix) {
   line-height: 100%;
