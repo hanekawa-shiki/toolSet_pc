@@ -1,7 +1,9 @@
-import type { DecodedTorrent } from '@/types'
-import { Buffer } from 'node:buffer'
+// parseTorrentFileToMagnet.ts
 
+import type { DecodedTorrent, ParsedTorrentInfo } from '@/types'
+import { Buffer } from 'node:buffer'
 import bencode from 'bencode'
+
 /**
  * 将 ArrayBuffer 转换为十六进制字符串
  * @param buffer ArrayBuffer
@@ -14,62 +16,59 @@ function arrayBufferToHex(buffer: ArrayBuffer): string {
 }
 
 /**
- * 将 .torrent 文件内容解析为磁力链接
+ * 将 .torrent 文件内容解析为磁力链接和总文件大小
  * @param file Blob/File 对象
- * @returns Promise<string> 磁力链接
+ * @returns Promise<ParsedTorrentInfo> 磁力链接和文件总大小
  */
-async function parseTorrentFileToMagnet(file: File): Promise<string> {
+async function parseTorrentFileToMagnet(file: File): Promise<ParsedTorrentInfo> {
   try {
-    // 1. 将文件转换为 ArrayBuffer
     const torrentBuffer = await file.arrayBuffer()
-
-    // 1. 使用 bencode 库解码 torrent 文件内容
-    // 强制转换为 DecodedTorrent 类型
     const decodedTorrent = bencode.decode(Buffer.from(torrentBuffer)) as DecodedTorrent
 
-    // 2. 获取 info 字典的原始 Bencode 编码
     const infoDict = decodedTorrent.info
-    if (!infoDict) {
+    if (infoDict === null || infoDict === undefined) {
       throw new Error('无效的 torrent 文件：缺少 \'info\' 字典。')
     }
     const infoEncoded = bencode.encode(infoDict)
 
-    // 3. 计算 info hash (SHA-1)
-    // const hashBuffer = await crypto.subtle.digest('SHA-1', infoEncoded)
-    // 1. 获取 info hash (SHA-1)
-    // 确保 infoEncoded 是一个标准的 Uint8Array，而不是可能使用 SharedArrayBuffer 的 Buffer
     const infoEncodedUint8Array = new Uint8Array(infoEncoded)
-
-    // 2. 将 Uint8Array 转换为 ArrayBuffer
-    // 为了确保与 crypto.subtle.digest 的兼容性
     const infoEncodedArrayBuffer = infoEncodedUint8Array.buffer.slice(
       infoEncodedUint8Array.byteOffset,
       infoEncodedUint8Array.byteOffset + infoEncodedUint8Array.byteLength,
     )
-    // 3. 计算 SHA-1 哈希
     const hashBuffer = await crypto.subtle.digest('SHA-1', infoEncodedArrayBuffer)
     const infoHash = arrayBufferToHex(hashBuffer)
 
-    // 4. 构建 Magnet 链接
-    // 确保属性存在且是 Buffer 类型，并转换为字符串
-    const displayName = infoDict.name
-      ? `&dn=${encodeURIComponent(infoDict.name.toString('utf8'))}` // 明确指定编码
+    const displayName = (infoDict.name !== null && infoDict.name !== undefined)
+      ? `&dn=${encodeURIComponent(infoDict.name.toString('utf8'))}`
       : ''
 
     let trackerUrl = ''
-    if (decodedTorrent.announce) {
+    if (decodedTorrent.announce !== null && decodedTorrent.announce !== undefined) {
       trackerUrl = `&tr=${encodeURIComponent(decodedTorrent.announce.toString('utf8'))}`
     } else if (decodedTorrent['announce-list'] && decodedTorrent['announce-list'].length > 0) {
-      const firstTracker = decodedTorrent['announce-list'][0]?.[0] // 使用可选链操作符
+      const firstTracker = decodedTorrent['announce-list'][0]?.[0]
       if (firstTracker instanceof Buffer && firstTracker.byteLength > 0) {
         trackerUrl = `&tr=${encodeURIComponent(firstTracker.toString('utf8'))}`
       }
     }
 
     const magnetLink = `magnet:?xt=urn:btih:${infoHash}${displayName}${trackerUrl}`
-    return magnetLink
+
+    // 计算文件总大小
+    let totalSize = 0
+    if (infoDict.files && infoDict.files.length > 0) {
+      // 多个文件
+      for (const f of infoDict.files) {
+        totalSize += f.length
+      }
+    } else if (typeof infoDict.length === 'number' && infoDict.length >= 0) {
+      // 单个文件
+      totalSize = infoDict.length
+    }
+
+    return { magnetLink, totalSize }
   } catch (error: any) {
-    // 对 error 进行类型断言，或者检查其是否为 Error 实例
     throw new Error(`解析 ${file.name} 失败：${(error as Error).message || '文件内容解析错误'}`)
   }
 }

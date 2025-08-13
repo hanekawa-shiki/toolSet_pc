@@ -8,6 +8,7 @@
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
+    "update-types": "node ./tools/generate-index",
     "type-check": "vue-tsc --build",
     "lint": "eslint --fix"
   },

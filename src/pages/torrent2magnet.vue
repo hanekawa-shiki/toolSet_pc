@@ -1,4 +1,5 @@
 <script setup lang='ts'>
+import type { MessageType, TorrentFileDetail } from '@/types' // 导入 ParsedTorrentInfo
 import {
   Close as CloseIcon,
   CopyOutline as CopyIcon,
@@ -8,14 +9,12 @@ import {
 import { useMessage } from 'naive-ui'
 import { parseTorrentFileToMagnet } from '@/utils'
 
-type MessageType = 'success' | 'error' | 'warning' | 'info'
-
 defineOptions({
   name: 'Torrent2Magnet',
 })
 const message = useMessage()
 const selectedFiles = ref<File[]>([])
-const magnetLinks = ref<string[]>([])
+const fileDetails = ref<TorrentFileDetail[]>([]) // 使用新的数组存储文件和其详细信息
 const fileInput = useTemplateRef<HTMLInputElement>('fileInput')
 
 function handleFileChange(event: Event): void {
@@ -26,22 +25,22 @@ function handleFileChange(event: Event): void {
 function triggerFileInput(): void {
   fileInput.value?.click()
 }
-function formatFileSize(bytes: number): string {
-  // 格式化文件大小
+
+/** 格式化文件大小为GB */
+function formatSizeInGB(bytes: number): string {
   if (bytes === 0)
-    return '0 B'
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return `${(bytes / k ** i).toFixed(2)} ${sizes[i]}`
+    return '0 GB'
+  const gb = bytes / (1024 ** 3)
+  return `${gb.toFixed(2)} GB`
 }
+
 /** 处理选择的 .torrent 文件 */
 async function handleFiles() {
-  magnetLinks.value = [] // 清空之前的磁力链
+  fileDetails.value = [] // 清空之前的列表
   for (const file of selectedFiles.value) {
     try {
-      const magnetLink = await parseTorrentFileToMagnet(file)
-      magnetLinks.value.push(magnetLink)
+      const { magnetLink, totalSize } = await parseTorrentFileToMagnet(file)
+      fileDetails.value.push({ file, magnetLink, totalSize })
     } catch (error: any) {
       setMsg({ type: 'error', msg: error.message })
       const index = selectedFiles.value.indexOf(file)
@@ -53,7 +52,7 @@ async function handleFiles() {
 }
 function removeFile(index: number): void {
   selectedFiles.value.splice(index, 1)
-  magnetLinks.value.splice(index, 1)
+  fileDetails.value.splice(index, 1)
 }
 
 async function handleCopy(link: string) {
@@ -66,9 +65,9 @@ async function handleCopy(link: string) {
 }
 
 async function copyAll() {
-  if (magnetLinks.value.length === 0)
+  if (fileDetails.value.length === 0)
     return
-  const allText = magnetLinks.value.join('\n')
+  const allText = fileDetails.value.map(item => item.magnetLink).join('\n')
   try {
     await navigator.clipboard.writeText(allText)
     setMsg({ type: 'success', msg: '已复制全部磁力链接' })
@@ -78,7 +77,7 @@ async function copyAll() {
 }
 async function clearAll() {
   selectedFiles.value = []
-  magnetLinks.value = []
+  fileDetails.value = []
 }
 
 function setMsg({ msg, type }: { msg: string, type: MessageType }): void {
@@ -113,7 +112,7 @@ function setMsg({ msg, type }: { msg: string, type: MessageType }): void {
     </template>
   </n-button>
   <n-flex
-    v-if="selectedFiles.length"
+    v-if="fileDetails.length"
     class="list-wrap"
     :wrap="false"
   >
@@ -122,7 +121,7 @@ function setMsg({ msg, type }: { msg: string, type: MessageType }): void {
       bordered
     >
       <n-list-item
-        v-for="(file, index) in selectedFiles"
+        v-for="(item, index) in fileDetails"
         :key="index"
         class="list-item-inner"
       >
@@ -137,19 +136,22 @@ function setMsg({ msg, type }: { msg: string, type: MessageType }): void {
             </n-icon>
           </n-button>
         </template>
-        {{ file.name }} {{ formatFileSize(file.size) }}
+        <div class="text-parent">
+          <span class="child-a">{{ item.file.name }}</span>
+          <span class="child-b">{{ formatSizeInGB(item.totalSize) }}</span>
+        </div>
       </n-list-item>
     </n-list>
     <n-icon class="list-icon">
       <SwapIcon />
     </n-icon>
     <n-list
-      v-if="selectedFiles.length"
+      v-if="fileDetails.length"
       class="list-item"
       bordered
     >
       <n-list-item
-        v-for="(file, index) in magnetLinks"
+        v-for="(item, index) in fileDetails"
         :key="index"
         class="list-item-inner"
       >
@@ -157,24 +159,24 @@ function setMsg({ msg, type }: { msg: string, type: MessageType }): void {
           <n-button
             text
             class="icon-button"
-            @click="handleCopy(file)"
+            @click="handleCopy(item.magnetLink)"
           >
             <n-icon>
               <CopyIcon />
             </n-icon>
           </n-button>
         </template>
-        {{ file }}
+        {{ item.magnetLink }}
       </n-list-item>
     </n-list>
   </n-flex>
   <n-flex
-    v-if="selectedFiles.length"
+    v-if="fileDetails.length"
     class="list-wrap"
     :wrap="false"
   >
     <div
-      v-if="selectedFiles.length"
+      v-if="fileDetails.length"
       class="list-item"
     >
       <n-button
@@ -196,7 +198,7 @@ function setMsg({ msg, type }: { msg: string, type: MessageType }): void {
       <SwapIcon />
     </n-icon>
     <div
-      v-if="selectedFiles.length"
+      v-if="fileDetails.length"
       class="list-item"
     >
       <n-button
@@ -258,5 +260,24 @@ function setMsg({ msg, type }: { msg: string, type: MessageType }): void {
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 100px;
+}
+
+.text-parent {
+  display: flex;
+  width: 100%;
+}
+
+.child-a {
+  flex-shrink: 1;
+  flex-grow: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 8px;
+}
+
+.child-b {
+  flex-shrink: 0;
+  flex-grow: 0;
 }
 </style>
