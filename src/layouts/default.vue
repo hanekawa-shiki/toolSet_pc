@@ -5,6 +5,7 @@ import {
 } from '@vicons/ionicons5'
 import { NIcon } from 'naive-ui'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
+import logo from '@/assets/image/logo.png'
 
 defineOptions({
   name: 'DefaultLayout',
@@ -69,15 +70,20 @@ watch(
       :collapsed-width="48"
       show-trigger="arrow-circle"
       :collapsed="collapsed"
-      content-style="padding-top: 200px;"
+      :content-style="collapsed ? 'padding-top: 0;' : 'padding-top: 240px;'"
       @collapse="collapsed = true"
       @expand="collapsed = false"
     >
       <div
+        v-show="!collapsed"
         class="logo"
         @click="goHome"
       >
-        logo
+        <img
+          :src="logo"
+          width="240"
+          height="240"
+        >
       </div>
       <n-menu
         v-model:value="activeKey"
@@ -120,18 +126,16 @@ watch(
   position: sticky;
   top: 0;
   z-index: 10;
-  /* width: calc(100% - 240px); */
 }
 
 .sider {
   height: 100%;
   .logo {
-    height: 200px;
+    height: 240px;
     width: 100%;
-    line-height: 200px;
     text-align: center;
-    font-size: 24px;
-    background-color: aquamarine;
+    font-size: 0;
+    background-color: currentColor;
     position: absolute;
     top: 0;
     cursor: pointer;
