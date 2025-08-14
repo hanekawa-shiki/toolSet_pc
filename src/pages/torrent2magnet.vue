@@ -1,6 +1,7 @@
 <script setup lang='ts'>
 import type { MessageType, TorrentFileDetail } from '@/types' // 导入 ParsedTorrentInfo
 import {
+  Attach as AttachIcon,
   Close as CloseIcon,
   CopyOutline as CopyIcon,
   FileTrayFullOutline as FileIcon,
@@ -75,6 +76,26 @@ async function copyAll() {
     setMsg({ type: 'warning', msg: '复制失败，请手动复制' })
   }
 }
+
+async function export2file() {
+  if (fileDetails.value.length === 0) {
+    setMsg({ type: 'warning', msg: '没有可以导出的磁力链接' })
+    return
+  }
+
+  const allText = fileDetails.value.map(item => item.magnetLink).join('\n')
+  const blob = new Blob([allText], { type: 'text/plain;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+
+  const link = document.createElement('a')
+  link.href = url
+  link.download = `magnet_links_${Date.now()}.txt`
+  link.click()
+
+  URL.revokeObjectURL(url)
+  setMsg({ type: 'success', msg: '磁力链接已导出' })
+}
+
 async function clearAll() {
   selectedFiles.value = []
   fileDetails.value = []
@@ -180,7 +201,7 @@ function setMsg({ msg, type }: { msg: string, type: MessageType }): void {
       class="list-item"
     >
       <n-button
-        type="info"
+        type="warning"
         @click="clearAll"
       >
         清除所有种子
@@ -202,13 +223,25 @@ function setMsg({ msg, type }: { msg: string, type: MessageType }): void {
       class="list-item"
     >
       <n-button
-        type="info"
+        type="primary"
         @click="copyAll"
       >
         复制所有磁力链
         <template #icon>
           <n-icon>
             <CopyIcon />
+          </n-icon>
+        </template>
+      </n-button>
+      <n-button
+        type="primary"
+        class="ml-16"
+        @click="export2file"
+      >
+        导出所有磁力链
+        <template #icon>
+          <n-icon>
+            <AttachIcon />
           </n-icon>
         </template>
       </n-button>
@@ -279,5 +312,9 @@ function setMsg({ msg, type }: { msg: string, type: MessageType }): void {
 .child-b {
   flex-shrink: 0;
   flex-grow: 0;
+}
+
+.ml-16 {
+  margin-left: 16px;
 }
 </style>

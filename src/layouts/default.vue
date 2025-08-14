@@ -38,13 +38,22 @@ const menuOptions: MenuOption[] = [
       ),
     key: 'torrent2magnet',
     icon: renderIcon(MagnetIcon),
+    path: '/torrent2magnet',
   },
 ]
 
 const layoutScroll = useTemplateRef('layoutScroll')
 watch(
-  () => route.fullPath,
-  () => {
+  () => route.path,
+  (path) => {
+    menuOptions.forEach((item) => {
+      if (item.path === path) {
+        activeKey.value = item.key as string
+      } else {
+        activeKey.value = null
+      }
+    })
+
     nextTick(() => {
       layoutScroll.value?.scrollTo({
         top: 0,
@@ -53,6 +62,7 @@ watch(
       })
     })
   },
+  { immediate: true },
 )
 </script>
 
