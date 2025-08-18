@@ -5,14 +5,8 @@ defineOptions({
 </script>
 
 <template>
-  <div class="demo">
-    home-page
-  </div>
+  home-page
 </template>
 
 <style scoped>
-.demo {
-  height: 200vh;
-  width: 200vw;
-}
 </style>
