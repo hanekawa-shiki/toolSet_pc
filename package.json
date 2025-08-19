@@ -10,6 +10,7 @@
     "build-only": "vite build",
     "update-types": "node ./tools/generate-index",
     "type-check": "vue-tsc --build",
+    "postinstall": "simple-git-hooks",
     "lint": "eslint --fix"
   },
   "dependencies": {
