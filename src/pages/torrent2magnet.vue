@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import type { MessageType, TorrentFileDetail } from '@/types' // 导入 ParsedTorrentInfo
+import type { TorrentFileDetail } from '@/types'
 import {
   Attach as AttachIcon,
   Close as CloseIcon,
@@ -7,13 +7,11 @@ import {
   FileTrayFullOutline as FileIcon,
   SwapHorizontal as SwapIcon,
 } from '@vicons/ionicons5'
-import { useMessage } from 'naive-ui'
-import { parseTorrentFileToMagnet } from '@/utils'
+import { parseTorrentFileToMagnet, setMessage } from '@/utils'
 
 defineOptions({
   name: 'Torrent2Magnet',
 })
-const message = useMessage()
 const selectedFiles = ref<File[]>([])
 const fileDetails = ref<TorrentFileDetail[]>([]) // 使用新的数组存储文件和其详细信息
 const fileInput = useTemplateRef<HTMLInputElement>('fileInput')
@@ -43,7 +41,7 @@ async function handleFiles() {
       const { magnetLink, totalSize } = await parseTorrentFileToMagnet(file)
       fileDetails.value.push({ file, magnetLink, totalSize })
     } catch (error: any) {
-      setMsg({ type: 'error', msg: error.message })
+      setMessage({ type: 'error', msg: error.message })
       const index = selectedFiles.value.indexOf(file)
       if (index !== -1) {
         selectedFiles.value.splice(index, 1)
@@ -59,9 +57,9 @@ function removeFile(index: number): void {
 async function handleCopy(link: string) {
   try {
     await navigator.clipboard.writeText(link)
-    setMsg({ type: 'success', msg: '磁力链接已复制' })
+    setMessage({ type: 'success', msg: '磁力链接已复制' })
   } catch {
-    setMsg({ type: 'warning', msg: '复制失败，请手动复制' })
+    setMessage({ type: 'warning', msg: '复制失败，请手动复制' })
   }
 }
 
@@ -71,15 +69,15 @@ async function copyAll() {
   const allText = fileDetails.value.map(item => item.magnetLink).join('\n')
   try {
     await navigator.clipboard.writeText(allText)
-    setMsg({ type: 'success', msg: '已复制全部磁力链接' })
+    setMessage({ type: 'success', msg: '已复制全部磁力链接' })
   } catch {
-    setMsg({ type: 'warning', msg: '复制失败，请手动复制' })
+    setMessage({ type: 'warning', msg: '复制失败，请手动复制' })
   }
 }
 
 async function export2file() {
   if (fileDetails.value.length === 0) {
-    setMsg({ type: 'warning', msg: '没有可以导出的磁力链接' })
+    setMessage({ type: 'warning', msg: '没有可以导出的磁力链接' })
     return
   }
 
@@ -93,23 +91,12 @@ async function export2file() {
   link.click()
 
   URL.revokeObjectURL(url)
-  setMsg({ type: 'success', msg: '磁力链接已导出' })
+  setMessage({ type: 'success', msg: '磁力链接已导出' })
 }
 
 async function clearAll() {
   selectedFiles.value = []
   fileDetails.value = []
-}
-
-function setMsg({ msg, type }: { msg: string, type: MessageType }): void {
-  message[type](
-    msg,
-    {
-      keepAliveOnHover: true,
-      closable: true,
-      duration: 3000,
-    },
-  )
 }
 </script>
 
