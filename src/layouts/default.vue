@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import type { MenuOption } from 'naive-ui'
 import {
+  MenuUnfoldOutlined as MenuCloseIcon,
+  MenuFoldOutlined as MenuOpenIcon,
+} from '@vicons/antd'
+import {
+  Calendar as CalendarIcon,
+  Home as HomeIcon,
   Magnet as MagnetIcon,
 } from '@vicons/ionicons5'
 import { NIcon } from 'naive-ui'
@@ -31,6 +37,21 @@ const menuOptions: MenuOption[] = [
         RouterLink,
         {
           to: {
+            path: '/calendar',
+          },
+        },
+        { default: () => '日历' },
+      ),
+    key: 'calendar',
+    icon: renderIcon(CalendarIcon),
+    path: '/calendar',
+  },
+  {
+    label: () =>
+      h(
+        RouterLink,
+        {
+          to: {
             path: '/torrent2magnet',
           },
         },
@@ -42,7 +63,7 @@ const menuOptions: MenuOption[] = [
   },
 ]
 
-const layoutScroll = useTemplateRef('layoutScroll')
+const layoutScroll = useTemplateRef<HTMLElement>('layoutScroll')
 watch(
   () => route.path,
   (path) => {
@@ -64,6 +85,10 @@ watch(
   },
   { immediate: true },
 )
+
+const component = computed(() => {
+  return collapsed.value ? MenuCloseIcon : MenuOpenIcon
+})
 </script>
 
 <template>
@@ -110,7 +135,18 @@ watch(
         bordered
         class="header"
       >
-        header
+        <NIcon
+          class="menu-icon"
+          size="32"
+          :component="component"
+          @click="collapsed = !collapsed"
+        />
+        <NIcon
+          class="menu-icon"
+          size="32"
+          :component="HomeIcon"
+          @click="goHome"
+        />
       </n-layout-header>
       <n-layout-content
         ref="layoutScroll"
@@ -136,6 +172,13 @@ watch(
   position: sticky;
   top: 0;
   z-index: 10;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  .menu-icon {
+    cursor: pointer;
+    margin-right: 16px;
+  }
 }
 
 .sider {
