@@ -23,6 +23,7 @@
     "@tsconfig/node22": "22.0.2",
     "@types/bencode": "2.0.4",
     "@types/node": "24.3.0",
+    "@vicons/antd": "0.13.0",
     "@vicons/ionicons5": "0.13.0",
     "@vitejs/plugin-vue": "6.0.1",
     "@vue/tsconfig": "0.8.1",
