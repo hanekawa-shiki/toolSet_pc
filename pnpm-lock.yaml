@@ -8,9 +8,24 @@ importers:
 
   .:
     dependencies:
+      bencode:
+        specifier: 4.0.0
+        version: 4.0.0
       dayjs:
         specifier: 1.11.13
         version: 1.11.13
+      lunisolar:
+        specifier: 2.6.0
+        version: 2.6.0
+      lxgw-wenkai-screen-web:
+        specifier: 1.520.0
+        version: 1.520.0
+      naive-ui:
+        specifier: 2.42.0
+        version: 2.42.0(vue@3.5.18(typescript@5.9.2))
+      normalize.css:
+        specifier: 8.0.1
+        version: 8.0.1
       pinia:
         specifier: 3.0.3
         version: 3.0.3(typescript@5.9.2)(vue@3.5.18(typescript@5.9.2))
@@ -45,9 +60,6 @@ importers:
       '@vue/tsconfig':
         specifier: 0.8.1
         version: 0.8.1(typescript@5.9.2)(vue@3.5.18(typescript@5.9.2))
-      bencode:
-        specifier: 4.0.0
-        version: 4.0.0
       eslint:
         specifier: 9.33.0
         version: 9.33.0(jiti@2.5.1)
@@ -63,15 +75,6 @@ importers:
       lint-staged:
         specifier: 16.1.5
         version: 16.1.5
-      lxgw-wenkai-screen-web:
-        specifier: 1.520.0
-        version: 1.520.0
-      naive-ui:
-        specifier: 2.42.0
-        version: 2.42.0(vue@3.5.18(typescript@5.9.2))
-      normalize.css:
-        specifier: 8.0.1
-        version: 8.0.1
       npm-run-all2:
         specifier: 8.0.4
         version: 8.0.4
@@ -2161,6 +2164,9 @@ packages:
 
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
+
+  lunisolar@2.6.0:
+    resolution: {integrity: sha512-Q2Ph0MtYDovbX5lvvo2FvM+bFzZVZaIb70q+FyQLheZ4xuL5tvCBP/uEU5KwG+vfo0ztzGPrlIitOcGhltfwvQ==}
 
   lxgw-wenkai-screen-web@1.520.0:
     resolution: {integrity: sha512-6o+71CbOL3deJYSG0BGHCVrP7Vm4M1f9qUpzlW2EhNtayf97gmbvTcpe7ai46yT25F9qmbag/uaD/b2pYyOAhw==}
@@ -5429,6 +5435,8 @@ snapshots:
   lru-cache@5.1.1:
     dependencies:
       yallist: 3.1.1
+
+  lunisolar@2.6.0: {}
 
   lxgw-wenkai-screen-web@1.520.0: {}
 
