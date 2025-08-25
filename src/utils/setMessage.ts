@@ -1,10 +1,11 @@
+import type { MessageApiInjection } from 'naive-ui/lib/message/src/MessageProvider'
 import type { MessageType } from '@/types'
-import { useMessage } from 'naive-ui'
 
-const message = useMessage()
-
-function setMessage({ msg, type }: { msg: string, type: MessageType, duration?: number }): void {
-  message[type](
+function setMessage(
+  messageApi: MessageApiInjection,
+  { msg, type }: { msg: string, type: MessageType, duration?: number },
+): void {
+  messageApi[type](
     msg,
     {
       keepAliveOnHover: true,
