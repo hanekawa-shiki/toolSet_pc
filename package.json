@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "bencode": "4.0.0",
-    "dayjs": "1.11.13",
+    "dayjs": "1.11.14",
     "lunisolar": "2.6.0",
     "lxgw-wenkai-screen-web": "1.520.0",
     "naive-ui": "2.42.0",
