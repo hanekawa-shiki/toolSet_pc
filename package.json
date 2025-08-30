@@ -37,6 +37,7 @@
     "eslint-plugin-format": "1.0.1",
     "eslint-plugin-vuejs-accessibility": "2.4.1",
     "jiti": "2.5.1",
+    "less": "^4.4.1",
     "lint-staged": "16.1.5",
     "npm-run-all2": "8.0.4",
     "simple-git-hooks": "2.13.1",

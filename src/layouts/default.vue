@@ -137,13 +137,13 @@ const component = computed(() => {
       >
         <NIcon
           class="menu-icon"
-          size="32"
+          size="24"
           :component="component"
           @click="collapsed = !collapsed"
         />
         <NIcon
           class="menu-icon"
-          size="32"
+          size="24"
           :component="HomeIcon"
           @click="goHome"
         />
@@ -161,7 +161,7 @@ const component = computed(() => {
   </n-layout>
 </template>
 
-<style scoped>
+<style lang="less" scoped>
 .layout {
   height: 100vh;
   position: relative;

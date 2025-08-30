@@ -248,7 +248,7 @@ async function clearAll() {
   >
 </template>
 
-<style scoped>
+<style lang="less" scoped>
 .header {
   font-size: 20px;
   font-weight: bold;
