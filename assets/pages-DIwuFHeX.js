@@ -1,0 +1,1 @@
+import{v as e}from"./runtime-core.esm-bundler-DCnsCh6Z.js";var t=e({name:`IndexPage`,__name:`index`,setup(e){return(e,t)=>` home-page `}});export{t as default};
