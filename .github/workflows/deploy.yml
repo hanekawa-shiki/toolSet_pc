@@ -18,8 +18,6 @@ jobs:
           # 如果你文档需要 Git 子模块，取消注释下一行
           # submodules: true
       - uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - name: Set Node Version
         uses: actions/setup-node@v4
