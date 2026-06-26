@@ -133,6 +133,17 @@
     @apply bg-background text-foreground;
   }
 
+  /* 页面内容最大宽度居中 */
+  [data-slot='sidebar-wrapper'] {
+    max-width: 1440px;
+    margin-left: auto;
+    margin-right: auto;
+    /* transform 创建新的包含块，使 fixed 定位的 sidebar 相对于此容器定位 */
+    transform: translateX(0);
+    /* 裁剪 sidebar 折叠时的 offcanvas 动画，使其移出可见区域 */
+    overflow: hidden;
+  }
+
   html {
     @apply font-sans;
   }
