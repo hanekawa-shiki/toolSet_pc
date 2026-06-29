@@ -16,6 +16,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noEmit": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "verbatimModuleSyntax": true,
     "erasableSyntaxOnly": true,
     "skipLibCheck": true

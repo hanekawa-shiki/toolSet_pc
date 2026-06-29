@@ -131,6 +131,8 @@
 
   body {
     @apply bg-background text-foreground;
+    overflow: hidden;
+    height: 100dvh;
   }
 
   /* 页面内容最大宽度居中 */
@@ -138,10 +140,54 @@
     max-width: 1440px;
     margin-left: auto;
     margin-right: auto;
-    /* transform 创建新的包含块，使 fixed 定位的 sidebar 相对于此容器定位 */
     transform: translateX(0);
-    /* 裁剪 sidebar 折叠时的 offcanvas 动画，使其移出可见区域 */
     overflow: hidden;
+    height: 100dvh;
+  }
+
+  /* Safari 风格滚动条（全局） */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    background: rgba(0, 0, 0, 0.15);
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.35);
+    background-clip: content-box;
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
+    background-clip: content-box;
+  }
+
+  /* 滚动容器：Safari 风格滚动行为 */
+  .scroll-safari-style {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+    scroll-behavior: smooth;
+    overscroll-behavior: contain;
+  }
+
+  .dark .scroll-safari-style {
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
   }
 
   html {
