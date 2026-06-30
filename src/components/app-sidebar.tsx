@@ -1,8 +1,6 @@
 'use client';
 
-import {
-  Wrench,
-} from 'lucide-react';
+import { Wrench } from 'lucide-react';
 
 import * as React from 'react';
 import { NavMain } from '@/components/nav-main';

@@ -5,9 +5,7 @@ import { resolveIcon } from './icon-map';
  * 将文件路径转换为路由路径
  */
 function filePathToRoutePath(filePath: string): string {
-  let relative = filePath
-    .replace(/^.*\/pages\//, '')
-    .replace(/\.(?:tsx|ts|jsx|js)$/, '');
+  let relative = filePath.replace(/^.*\/pages\//, '').replace(/\.(?:tsx|ts|jsx|js)$/, '');
 
   relative = relative.replace(/\/index$/, '');
   if (relative === 'index')
@@ -33,15 +31,11 @@ function deriveTitleFromFilePath(filePath: string): string {
   const name = match ? match[1] : filePath;
   const dirMatch = name.match(/(.+)\/index$/);
   const raw = dirMatch ? dirMatch[1] : name;
-  return raw
-    .replace(/[-_]/g, ' ')
-    .replace(/\b\w/g, c => c.toUpperCase());
+  return raw.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 }
 
 function deriveTitleFromDirName(dirName: string): string {
-  return dirName
-    .replace(/[-_]/g, ' ')
-    .replace(/\b\w/g, c => c.toUpperCase());
+  return dirName.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 }
 
 function isExcluded(filePath: string, excludes: string[]): boolean {
@@ -85,10 +79,7 @@ const metaModules = import.meta.glob<{ default?: PageMeta & { icon?: string } }>
 );
 
 // 页面组件（懒加载）- 只匹配 .tsx/.jsx，避免匹配 .meta.ts 文件
-const pageModules = import.meta.glob<PageModule>(
-  '../pages/**/*.{tsx,jsx}',
-  { eager: false },
-);
+const pageModules = import.meta.glob<PageModule>('../pages/**/*.{tsx,jsx}', { eager: false });
 
 /**
  * 将 meta 模块的 filePath 映射到对应的页面组件 filePath
@@ -99,14 +90,24 @@ function metaFilePathToPageFilePath(metaPath: string): string {
   // 映射到 ../pages/torrent2magnet.tsx
   const fileName = metaPath.replace(/^\.\/meta\/(.+)\.meta\.ts$/, '$1');
   // 查找对应的页面模块
-  const candidates = [`../pages/${fileName}.tsx`, `../pages/${fileName}.ts`, `../pages/${fileName}.jsx`, `../pages/${fileName}.js`];
+  const candidates = [
+    `../pages/${fileName}.tsx`,
+    `../pages/${fileName}.ts`,
+    `../pages/${fileName}.jsx`,
+    `../pages/${fileName}.js`,
+  ];
   for (const candidate of candidates) {
     if (candidate in pageModules) {
       return candidate;
     }
   }
   // 检查是否是目录下的 index
-  const indexCandidates = [`../pages/${fileName}/index.tsx`, `../pages/${fileName}/index.ts`, `../pages/${fileName}/index.jsx`, `../pages/${fileName}/index.js`];
+  const indexCandidates = [
+    `../pages/${fileName}/index.tsx`,
+    `../pages/${fileName}/index.ts`,
+    `../pages/${fileName}/index.jsx`,
+    `../pages/${fileName}/index.js`,
+  ];
   for (const candidate of indexCandidates) {
     if (candidate in pageModules) {
       return candidate;

@@ -8,9 +8,7 @@ export function App() {
 
   return (
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-      <TooltipProvider>
-        {element}
-      </TooltipProvider>
+      <TooltipProvider>{element}</TooltipProvider>
     </ThemeProvider>
   );
 }

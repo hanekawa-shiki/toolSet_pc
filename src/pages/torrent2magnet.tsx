@@ -124,7 +124,7 @@ export default function Torrent2Magnet() {
   }, [torrents]);
 
   return (
-    <div className="h-full w-full">
+    <div className="size-full">
       <div className="text-lg md:text-xl">{meta.title}</div>
 
       <div className="mt-4 flex items-center gap-3">
@@ -136,18 +136,13 @@ export default function Torrent2Magnet() {
           className="hidden"
           onChange={handleFileSelect}
         />
-        <Button
-          size="lg"
-          onClick={() => fileInputRef.current?.click()}
-          disabled={loading}
-        >
+        <Button size="lg" onClick={() => fileInputRef.current?.click()} disabled={loading}>
           <FileInput className="size-4" />
           {loading ? '解析中...' : '选择Torrent文件'}
         </Button>
         {torrents.length > 0 && (
           <span className="text-sm text-muted-foreground">
             已选择
-            {' '}
             {torrents.length}
             {' '}
             个文件
@@ -155,9 +150,7 @@ export default function Torrent2Magnet() {
         )}
       </div>
 
-      {errorMsg && (
-        <div className="mt-2 text-sm text-destructive">{errorMsg}</div>
-      )}
+      {errorMsg && <div className="mt-2 text-sm text-destructive">{errorMsg}</div>}
 
       {torrents.length > 0 && (
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -193,9 +186,7 @@ export default function Torrent2Magnet() {
                   className="flex items-center gap-2 rounded-md bg-muted/50 px-3 py-2 text-sm"
                 >
                   <CopyButton text={t.magnet} />
-                  <span className="min-w-0 flex-1 truncate text-sm">
-                    {t.magnet}
-                  </span>
+                  <span className="min-w-0 flex-1 truncate text-sm">{t.magnet}</span>
                 </div>
               ))}
             </div>

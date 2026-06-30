@@ -80,7 +80,7 @@ function NavMenuItem({ item }: { item: NavMainItem }) {
                           <NavLink
                             to={subItem.url}
                             className={({ isActive: active }) =>
-                              active ? 'text-sidebar-accent-foreground bg-sidebar-accent' : ''}
+                              active ? 'bg-sidebar-accent text-sidebar-accent-foreground' : ''}
                           >
                             <span>{subItem.title}</span>
                           </NavLink>
@@ -130,7 +130,12 @@ function NavMenuButton({
 
   if (isParent && !item.url) {
     return (
-      <SidebarMenuButton asChild={false} tooltip={item.title} onClick={handleClick} isActive={isActive}>
+      <SidebarMenuButton
+        asChild={false}
+        tooltip={item.title}
+        onClick={handleClick}
+        isActive={isActive}
+      >
         <span className="cursor-pointer select-none">{content}</span>
       </SidebarMenuButton>
     );
@@ -141,7 +146,7 @@ function NavMenuButton({
       <NavLink
         to={item.url}
         className={({ isActive: active }) =>
-          active ? 'text-sidebar-accent-foreground bg-sidebar-accent' : ''}
+          active ? 'bg-sidebar-accent text-sidebar-accent-foreground' : ''}
       >
         {content}
       </NavLink>

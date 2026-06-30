@@ -2,7 +2,13 @@ import dayjs from 'dayjs';
 import isoWeek from 'dayjs/plugin/isoWeek';
 import lunisolar from 'lunisolar';
 import { useCallback, useMemo, useState } from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { getHolidayInfo } from '@/data/holidays';
 import { cn } from '@/lib/utils';
 
@@ -26,7 +32,9 @@ function setWeekStart(val: 0 | 6) {
   try {
     localStorage.setItem(WEEK_START_KEY, String(val));
   }
-  catch { /* ignore */ }
+  catch {
+    /* ignore */
+  }
 }
 
 // ==================== 工具函数 ====================
@@ -67,18 +75,18 @@ function getLunarFullInfo(dateStr: string) {
 }
 
 const MONTH_NAMES = [
-  '一月',
-  '二月',
-  '三月',
-  '四月',
-  '五月',
-  '六月',
-  '七月',
-  '八月',
-  '九月',
-  '十月',
-  '十一月',
-  '十二月',
+  '1月',
+  '2月',
+  '3月',
+  '4月',
+  '5月',
+  '6月',
+  '7月',
+  '8月',
+  '9月',
+  '10月',
+  '11月',
+  '12月',
 ];
 
 function getWeekdayNames(weekStart: 0 | 6): string[] {
@@ -103,7 +111,13 @@ interface CalendarCell {
 
 // ==================== 单月日历网格 ====================
 
-function SingleMonthGrid({ year, month, selectedDate, onSelectDate, weekStart }: {
+function SingleMonthGrid({
+  year,
+  month,
+  selectedDate,
+  onSelectDate,
+  weekStart,
+}: {
   year: number;
   month: number;
   selectedDate: string | null;
@@ -198,63 +212,110 @@ function SingleMonthGrid({ year, month, selectedDate, onSelectDate, weekStart }:
             tagClass = 'bg-red-50 text-red-400 dark:bg-red-950 dark:text-red-400';
           }
 
+          // 格子背景色：法定节假日 > 周末（排除调休上班）
+          let cellBg = '';
+          if (!cell.isSelected) {
+            if (cell.isHoliday) {
+              cellBg = 'bg-red-100/60 dark:bg-red-900/30';
+            }
+            else if (cell.isWeekend && !cell.isWorkday) {
+              cellBg = 'bg-red-50/60 dark:bg-red-950/20';
+            }
+          }
+
           return (
             <div
               key={idx}
               role="button"
               tabIndex={cell.day > 0 ? 0 : undefined}
-              onClick={() => cell.day > 0 && onSelectDate(`${year}-${String(month + 1).padStart(2, '0')}-${String(cell.day).padStart(2, '0')}`)}
+              onClick={() =>
+                cell.day > 0
+                && onSelectDate(
+                  `${year}-${String(month + 1).padStart(2, '0')}-${String(cell.day).padStart(2, '0')}`,
+                )}
               onKeyDown={(e) => {
                 if ((e.key === 'Enter' || e.key === ' ') && cell.day > 0) {
                   e.preventDefault();
-                  onSelectDate(`${year}-${String(month + 1).padStart(2, '0')}-${String(cell.day).padStart(2, '0')}`);
+                  onSelectDate(
+                    `${year}-${String(month + 1).padStart(2, '0')}-${String(cell.day).padStart(2, '0')}`,
+                  );
                 }
               }}
               className={cn(
-                'relative flex min-h-13 flex-col items-center justify-start p-0.5 text-center cursor-pointer',
+                'relative flex min-h-13 cursor-pointer flex-col items-center justify-start p-0.5 text-center',
                 'rounded border border-transparent hover:border-border',
+                cellBg,
                 cell.isSelected && 'bg-primary text-primary-foreground',
                 !cell.isSelected && cell.isToday && 'border-primary bg-primary/5',
-                cell.holidayName !== '' && !cell.isHoliday && !cell.isWorkday && 'text-red-500 dark:text-red-400',
-                !cell.isSelected && !cell.isHoliday && cell.solarTerm !== '' && 'text-green-600 dark:text-green-400',
+                cell.holidayName !== ''
+                && !cell.isHoliday
+                && !cell.isWorkday
+                && 'text-red-500 dark:text-red-400',
+                !cell.isSelected
+                && !cell.isHoliday
+                && cell.solarTerm !== ''
+                && 'text-green-600 dark:text-green-400',
                 cell.isSelected && 'text-primary-foreground',
               )}
             >
               {/* 左上角：休/班标签 */}
               {tagText !== '' && (
-                <span className={cn(
-                  'absolute top-0 left-0 flex size-3.5 items-center justify-center rounded-tl rounded-br text-[7px] leading-none font-bold',
-                  tagClass,
-                  cell.isSelected && 'bg-primary-foreground text-primary',
-                )}
+                <span
+                  className={cn(
+                    'absolute top-0 left-0 flex size-3.5 items-center justify-center rounded-tl rounded-br text-[7px] leading-none font-bold',
+                    tagClass,
+                    cell.isSelected && 'bg-primary-foreground text-primary',
+                  )}
                 >
                   {tagText}
                 </span>
               )}
 
-              <span className={cn(
-                'mt-1 text-sm',
-                !cell.isSelected && cell.isToday && 'font-bold text-primary',
-                cell.isSelected && 'font-bold text-primary-foreground',
-                !cell.isSelected && cell.holidayName !== '' && !cell.isHoliday && !cell.isWorkday && 'font-bold text-red-500 dark:text-red-400',
-              )}
+              <span
+                className={cn(
+                  'mt-1 text-sm',
+                  !cell.isSelected && cell.isToday && 'font-bold text-primary',
+                  cell.isSelected && 'font-bold text-primary-foreground',
+                  !cell.isSelected
+                  && cell.holidayName !== ''
+                  && !cell.isHoliday
+                  && !cell.isWorkday
+                  && 'font-bold text-red-500 dark:text-red-400',
+                )}
               >
                 {cell.day}
               </span>
               {cell.holidayName !== '' && !cell.isWorkday
                 ? (
-                    <span className={cn('text-[10px] leading-tight', cell.isSelected ? 'text-primary-foreground' : 'text-red-500 dark:text-red-400')}>
+                    <span
+                      className={cn(
+                        'text-[10px] leading-tight',
+                        cell.isSelected ? 'text-primary-foreground' : 'text-red-500 dark:text-red-400',
+                      )}
+                    >
                       {cell.holidayName}
                     </span>
                   )
                 : cell.solarTerm !== ''
                   ? (
-                      <span className={cn('text-[10px] leading-tight', cell.isSelected ? 'text-primary-foreground' : 'text-green-600 dark:text-green-400')}>
+                      <span
+                        className={cn(
+                          'text-[10px] leading-tight',
+                          cell.isSelected
+                            ? 'text-primary-foreground'
+                            : 'text-green-600 dark:text-green-400',
+                        )}
+                      >
                         {cell.solarTerm}
                       </span>
                     )
                   : (
-                      <span className={cn('text-[10px] leading-tight', cell.isSelected ? 'text-primary-foreground' : 'text-muted-foreground')}>
+                      <span
+                        className={cn(
+                          'text-[10px] leading-tight',
+                          cell.isSelected ? 'text-primary-foreground' : 'text-muted-foreground',
+                        )}
+                      >
                         {cell.lunar}
                       </span>
                     )}
@@ -269,7 +330,7 @@ function SingleMonthGrid({ year, month, selectedDate, onSelectDate, weekStart }:
 // ==================== 右侧日期详情面板 ====================
 
 function DateDetailPanel({ selectedDate }: { selectedDate: string | null }) {
-  if (!selectedDate) {
+  if (selectedDate === null) {
     return (
       <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
         请在日历中选择一个日期
@@ -340,7 +401,9 @@ function DateDetailPanel({ selectedDate }: { selectedDate: string | null }) {
       {holidayInfo !== undefined && holidayInfo.isWorkday !== true && (
         <div className="rounded-lg bg-red-50 p-3 dark:bg-red-950">
           <div className="mb-1 text-xs font-medium text-red-600 dark:text-red-400">节假日</div>
-          <div className="text-sm font-medium text-red-600 dark:text-red-400">{holidayInfo.name}</div>
+          <div className="text-sm font-medium text-red-600 dark:text-red-400">
+            {holidayInfo.name}
+          </div>
         </div>
       )}
 
@@ -348,7 +411,9 @@ function DateDetailPanel({ selectedDate }: { selectedDate: string | null }) {
       {holidayInfo?.isWorkday === true && (
         <div className="rounded-lg bg-gray-50 p-3 dark:bg-gray-900">
           <div className="mb-1 text-xs font-medium text-gray-600 dark:text-gray-400">调休上班</div>
-          <div className="text-sm font-medium text-gray-600 dark:text-gray-400">{holidayInfo.name}</div>
+          <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+            {holidayInfo.name}
+          </div>
         </div>
       )}
     </div>
@@ -364,6 +429,39 @@ export default function CalendarPage() {
   const [selectedDate, setSelectedDate] = useState<string | null>(() => now.format('YYYY-MM-DD'));
   const [weekStartState, setWeekStartState] = useState<0 | 6>(getWeekStart);
 
+  /** 切换年/月后，保持选中日期的「日」不变；若目标月不存在该日则取月末 */
+  const adjustSelectedDate = useCallback(
+    (newYear: number, newMonth: number) => {
+      if (selectedDate === null)
+        return;
+      const parsed = dayjs(selectedDate);
+      const targetDay = parsed.date();
+      const lastDay = new Date(newYear, newMonth + 1, 0).getDate();
+      const day = Math.min(targetDay, lastDay);
+      const newDate = `${newYear}-${String(newMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      setSelectedDate(newDate);
+    },
+    [selectedDate],
+  );
+
+  const handleYearChange = useCallback(
+    (val: string) => {
+      const newYear = Number(val);
+      setYear(newYear);
+      adjustSelectedDate(newYear, month);
+    },
+    [month, adjustSelectedDate],
+  );
+
+  const handleMonthChange = useCallback(
+    (val: string) => {
+      const newMonth = Number(val);
+      setMonth(newMonth);
+      adjustSelectedDate(year, newMonth);
+    },
+    [year, adjustSelectedDate],
+  );
+
   const handleWeekStartChange = useCallback((val: string) => {
     const v = Number(val) as 0 | 6;
     setWeekStartState(v);
@@ -378,68 +476,78 @@ export default function CalendarPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* 导航栏：年月控制 + 一周起始日设置 */}
-      <div className="flex flex-wrap items-center justify-center gap-2">
-        {/* 年份选择 */}
-        <Select value={String(year)} onValueChange={v => setYear(Number(v))}>
-          <SelectTrigger size="sm" className="w-27">
-            <SelectValue placeholder="年" />
-          </SelectTrigger>
-          <SelectContent>
-            {Array.from({ length: 41 }, (_, i) => now.year() - 20 + i).map(y => (
-              <SelectItem key={y} value={String(y)}>
-                {y}
-                {' '}
-                年
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      {/* 导航栏：年月控制 + 一周起始日设置（移动端 2×2 网格，桌面端横向排列，滚动时固定） */}
+      <div className="sticky top-0 z-10 -mx-4 -mt-4 bg-background px-4 pt-4 pb-2 backdrop-blur-sm lg:mx-0 lg:mt-0 lg:px-0 lg:py-4">
+        <div className="grid grid-cols-2 gap-2 lg:flex lg:flex-wrap lg:items-center lg:justify-center">
+          {/* 年份选择 */}
+          <Select value={String(year)} onValueChange={handleYearChange}>
+            <SelectTrigger size="sm" className="w-full lg:w-27">
+              <SelectValue placeholder="年" />
+            </SelectTrigger>
+            <SelectContent>
+              {Array.from({ length: 41 }, (_, i) => now.year() - 20 + i).map(y => (
+                <SelectItem key={y} value={String(y)}>
+                  {y}
+                  {' '}
+                  年
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-        {/* 月份选择 */}
-        <Select value={String(month)} onValueChange={v => setMonth(Number(v))}>
-          <SelectTrigger size="sm" className="w-20">
-            <SelectValue placeholder="月" />
-          </SelectTrigger>
-          <SelectContent>
-            {MONTH_NAMES.map((name, i) => (
-              <SelectItem key={name} value={String(i)}>
-                {name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          {/* 月份选择 */}
+          <Select value={String(month)} onValueChange={handleMonthChange}>
+            <SelectTrigger size="sm" className="w-full lg:w-20">
+              <SelectValue placeholder="月" />
+            </SelectTrigger>
+            <SelectContent>
+              {MONTH_NAMES.map((name, i) => (
+                <SelectItem key={name} value={String(i)}>
+                  {name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-        <button type="button" onClick={handleGoToday} className="rounded-md border bg-background px-3 py-1 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
-          回到今天
-        </button>
+          <button
+            type="button"
+            onClick={handleGoToday}
+            className="rounded-md border bg-background px-3 py-1 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+          >
+            回到今天
+          </button>
 
-        <div className="mx-1 h-6 w-px bg-border" />
-
-        {/* 一周起始日选择 */}
-        <Select value={String(weekStartState)} onValueChange={handleWeekStartChange}>
-          <SelectTrigger size="sm">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="0">周日开始</SelectItem>
-            <SelectItem value="6">周一开始</SelectItem>
-          </SelectContent>
-        </Select>
+          {/* 一周起始日选择 */}
+          <Select value={String(weekStartState)} onValueChange={handleWeekStartChange}>
+            <SelectTrigger size="sm" className="w-full lg:w-auto">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="0">每周从周日开始</SelectItem>
+              <SelectItem value="6">每周从周一开始</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* 图例 */}
       <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-muted-foreground">
         <span className="flex items-center gap-1">
-          <span className="inline-block size-3 rounded-sm bg-red-100 text-[8px] leading-none font-bold text-red-700 dark:bg-red-900 dark:text-red-300">休</span>
+          <span className="flex size-3 content-center justify-center rounded-sm bg-red-100 text-[8px] leading-none font-bold text-red-700 dark:bg-red-900 dark:text-red-300">
+            休
+          </span>
           法定节假日
         </span>
         <span className="flex items-center gap-1">
-          <span className="inline-block size-3 rounded-sm bg-red-50 text-[8px] leading-none font-bold text-red-400 dark:bg-red-950 dark:text-red-400">休</span>
+          <span className="inline-block size-3 rounded-sm bg-red-50 text-[8px] leading-none font-bold text-red-400 dark:bg-red-950 dark:text-red-400">
+            休
+          </span>
           周末
         </span>
         <span className="flex items-center gap-1">
-          <span className="inline-block size-3 rounded-sm bg-gray-200 text-[8px] leading-none font-bold text-gray-500 dark:bg-gray-700 dark:text-gray-300">班</span>
+          <span className="inline-block size-3 rounded-sm bg-gray-200 text-[8px] leading-none font-bold text-gray-500 dark:bg-gray-700 dark:text-gray-300">
+            班
+          </span>
           调休上班
         </span>
         <span className="flex items-center gap-1">
@@ -452,7 +560,13 @@ export default function CalendarPage() {
       <div className="flex flex-col gap-4 lg:flex-row">
         {/* 左侧：月历 */}
         <div className="flex-1 rounded-lg border bg-card p-4">
-          <SingleMonthGrid year={year} month={month} selectedDate={selectedDate} onSelectDate={setSelectedDate} weekStart={weekStartState} />
+          <SingleMonthGrid
+            year={year}
+            month={month}
+            selectedDate={selectedDate}
+            onSelectDate={setSelectedDate}
+            weekStart={weekStartState}
+          />
         </div>
 
         {/* 右侧：选中日期详情 */}
