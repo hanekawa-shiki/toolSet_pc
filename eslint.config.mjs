@@ -104,7 +104,7 @@ export default antfu({
   },
   plugins: {
     ...tailwindcssRecommended.plugins,
-    // custom: classNameTrimPlugin,
+    custom: classNameTrimPlugin,
   },
   rules: {
     // Tailwind CSS 所有规则显式开启
@@ -116,6 +116,6 @@ export default antfu({
     'tailwindcss/no-contradicting-classname': 'error',
     'tailwindcss/no-unnecessary-arbitrary-value': 'warn',
     // 自定义规则
-    // 'custom/trim-classname-whitespace': 'error',
+    'custom/trim-classname-whitespace': 'error',
   },
 });
