@@ -115,19 +115,9 @@ function NavMenuButton({
   onClick?: () => void;
   onNavigate?: () => void;
 }) {
-  const handleClick = () => {
-    onClick?.();
-    onNavigate?.();
-  };
-
   if (isParent && !item.url) {
     return (
-      <SidebarMenuButton
-        asChild={false}
-        tooltip={item.title}
-        onClick={handleClick}
-        isActive={isActive}
-      >
+      <SidebarMenuButton asChild={false} tooltip={item.title} onClick={onClick} isActive={isActive}>
         {item.icon}
         {item.title}
       </SidebarMenuButton>
