@@ -345,11 +345,19 @@ function DateDetailPanel({ selectedDate }: { selectedDate: string | null }) {
   const solarTerm = lunar.solarTerm;
   const weekNum = getWeekOfYear(selectedDate);
 
+  const dayOfWeek = date.day();
+  const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+  const isWorkday = holidayInfo?.isWorkday === true;
+  const isHoliday = holidayInfo !== undefined && !isWorkday;
+  const isRestDay = isHoliday || (isWeekend && !isWorkday);
+
   return (
     <div className="flex flex-col gap-4 p-4">
       {/* 公历日期 */}
       <div className="flex items-center gap-3">
-        <span className="text-3xl font-bold">{date.date()}</span>
+        <span className={cn('text-3xl font-bold', isRestDay && 'text-red-500 dark:text-red-400')}>
+          {date.date()}
+        </span>
         <div className="flex flex-col">
           <span className="text-sm text-muted-foreground">
             {date.year()}
