@@ -7,12 +7,6 @@ import { Button } from '@/components/ui/button';
 
 const MAX_FILES = 100;
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const meta: PageMeta = {
-  title: '种子转磁力链',
-  icon: <Magnet />,
-};
-
 /**
  * 将 .torrent 文件解析为已解析的 torrent 实例。
  * parse-torrent 实际上是异步的，但 @types/parse-torrent
@@ -125,8 +119,6 @@ export default function Torrent2Magnet() {
 
   return (
     <div className="size-full">
-      <div className="text-lg md:text-xl">{meta.title}</div>
-
       <div className="mt-4 flex items-center gap-3">
         <input
           ref={fileInputRef}
@@ -158,7 +150,7 @@ export default function Torrent2Magnet() {
           <div>
             <div className="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground">
               <FileText className="size-4" />
-              Torrent 文件列表
+              Torrent
             </div>
             <div className="space-y-2 rounded-lg border p-3">
               {torrents.map(t => (
@@ -177,7 +169,7 @@ export default function Torrent2Magnet() {
           <div>
             <div className="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground">
               <Magnet className="size-4" />
-              Magnet 链接列表
+              Magnet
             </div>
             <div className="space-y-2 rounded-lg border p-3">
               {torrents.map(t => (

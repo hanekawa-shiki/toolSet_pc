@@ -11,22 +11,31 @@ const config: RouterConfig = {
     '**/components/**',
     '**/utils/**',
     '**/hooks/**',
+    '404.tsx',
   ],
 
   // 默认布局组件
   layoutPath: 'layout',
 
-  // 菜单标题映射（路径或目录名 → 中文名称）
-  // 用于覆盖自动生成的英文标题，支持两种 key：
-  // - 路由路径（如 '/home/home'）→ 覆盖该页面的菜单标题
-  // - 目录名（如 'home'）→ 覆盖该文件夹的菜单组标题
-  titleMap: {
-    // 文件夹菜单组标题（按目录名）
-    'home': '首页',
-    // 子页面标题（按路由路径）
-    '/home/home': '首页',
-    // 顶级页面标题（按路由路径）
-    '/about': '关于',
+  // 页面级菜单配置（key 为路由路径，如 '/calendar'）
+  pageMeta: {
+    '/calendar': {
+      title: '万年历',
+      icon: 'Calendar',
+    },
+    '/transform/torrent2magnet': {
+      title: '种子转磁力链',
+      icon: 'Magnet',
+    },
+  },
+
+  // 目录级（父级）菜单配置（key 为 pages/ 下的目录名）
+  dirMeta: {
+    transform: {
+      title: '开发工具',
+      icon: 'Wrench',
+      isActive: true,
+    },
   },
 
   // 自定义路由（优先级高于自动生成的路由）

@@ -4,6 +4,7 @@ import { Outlet } from 'react-router';
 import Layout from '@/layout/index';
 import { getAutoRouteMetas } from './auto-routes';
 import config from './config';
+import NotFound from './not-found';
 
 /**
  * 根据配置和 pages 目录自动生成路由表
@@ -20,8 +21,14 @@ function buildRoutes(): RouteObject[] {
     };
   });
 
-  // 合并自定义路由（如果有的话，追加到自动路由后面）
-  const childRoutes = [...autoRoutes, ...(config.customRoutes || [])];
+  // 404 catch-all 路由（必须放在最后）
+  const notFoundRoute: RouteObject = {
+    path: '*',
+    element: <NotFound />,
+  };
+
+  // 合并自定义路由 + 404 兜底
+  const childRoutes = [...autoRoutes, ...(config.customRoutes || []), notFoundRoute];
 
   // 如果配置了布局组件，将所有路由作为布局的子路由
   if (config.layoutPath != null && config.layoutPath !== '') {

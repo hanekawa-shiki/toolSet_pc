@@ -12,9 +12,8 @@ function filePathToRoutePath(filePath: string): string {
     relative = '';
 
   relative = relative.replace(/\[([^\]]+)\]/g, (_m: string, param: string | undefined) => {
-    if (param === undefined || param === '') {
+    if (param === undefined || param === '')
       return _m;
-    }
     if (param.startsWith('...'))
       return '*';
     return `:${param}`;
@@ -69,92 +68,28 @@ function getFirstLevelDir(filePath: string): string | null {
 }
 
 /**
- * 预加载所有页面的 meta（*.meta.ts 文件，无 JSX）
- * glob 模式与组件文件不同，不会触发 INEFFECTIVE_DYNAMIC_IMPORT 警告
+ * 根据路由路径从 config.pageMeta 查找页面元数据
  */
-// 预加载所有页面的 meta（router/meta/**/*.meta.ts 文件，无 JSX）
-const metaModules = import.meta.glob<{ default?: PageMeta & { icon?: string } }>(
-  './meta/**/*.meta.ts',
-  { eager: true },
-);
+function getPageMetaByPath(routePath: string): PageMetaConfig | undefined {
+  return config.pageMeta?.[routePath];
+}
 
-// 页面组件（懒加载）- 只匹配 .tsx/.jsx，避免匹配 .meta.ts 文件
+// 页面组件（懒加载）- 只匹配 .tsx/.jsx
 const pageModules = import.meta.glob<PageModule>('../pages/**/*.{tsx,jsx}', { eager: false });
-
-/**
- * 将 meta 模块的 filePath 映射到对应的页面组件 filePath
- * ../pages/torrent2magnet.meta.ts → ../pages/torrent2magnet.tsx
- */
-function metaFilePathToPageFilePath(metaPath: string): string {
-  // 从 router/meta/torrent2magnet.meta.ts 提取文件名
-  // 映射到 ../pages/torrent2magnet.tsx
-  const fileName = metaPath.replace(/^\.\/meta\/(.+)\.meta\.ts$/, '$1');
-  // 查找对应的页面模块
-  const candidates = [
-    `../pages/${fileName}.tsx`,
-    `../pages/${fileName}.ts`,
-    `../pages/${fileName}.jsx`,
-    `../pages/${fileName}.js`,
-  ];
-  for (const candidate of candidates) {
-    if (candidate in pageModules) {
-      return candidate;
-    }
-  }
-  // 检查是否是目录下的 index
-  const indexCandidates = [
-    `../pages/${fileName}/index.tsx`,
-    `../pages/${fileName}/index.ts`,
-    `../pages/${fileName}/index.jsx`,
-    `../pages/${fileName}/index.js`,
-  ];
-  for (const candidate of indexCandidates) {
-    if (candidate in pageModules) {
-      return candidate;
-    }
-  }
-  return `../pages/${fileName}`;
-}
-
-/**
- * 从 config.titleMap 和 metaModules 构建一个统一的 meta 查找表
- */
-function buildMetaLookup(): Map<string, PageMeta | undefined> {
-  const lookup = new Map<string, PageMeta | undefined>();
-
-  for (const [metaPath, mod] of Object.entries(metaModules)) {
-    const pagePath = metaFilePathToPageFilePath(metaPath);
-    const raw = mod?.default;
-    if (raw) {
-      lookup.set(pagePath, {
-        title: raw.title,
-        icon: resolveIcon(raw.icon as string),
-        isActive: raw.isActive,
-        hidden: raw.hidden,
-        order: raw.order,
-      });
-    }
-  }
-
-  return lookup;
-}
 
 export function getAutoRouteMetas(): AutoRouteMeta[] {
   const { excludes } = config;
-  const metaLookup = buildMetaLookup();
 
   const metas: AutoRouteMeta[] = [];
 
   for (const [filePath, importFn] of Object.entries(pageModules)) {
-    if (isExcluded(filePath, excludes)) {
+    if (isExcluded(filePath, excludes))
       continue;
-    }
-    if (isIndexFile(filePath)) {
+    if (isIndexFile(filePath))
       continue;
-    }
 
     const routePath = filePathToRoutePath(filePath);
-    const pageMeta = metaLookup.get(filePath);
+    const pageMeta = getPageMetaByPath(routePath);
 
     metas.push({
       filePath,
@@ -202,38 +137,47 @@ export function getRouteMenuItems(): NavMainItem[] {
 
   const items: NavMainItem[] = [];
 
+  // 顶级页面（不在任何目录下）
   for (const meta of topLevelFiles) {
     if (meta.pageMeta?.hidden)
       continue;
-    const resolvedTitle = meta.pageMeta?.title ?? config.titleMap?.[meta.path] ?? meta.title;
+    const resolvedTitle = meta.pageMeta?.title ?? meta.title;
     items.push({
       title: resolvedTitle,
       url: meta.path,
-      icon: meta.pageMeta?.icon,
+      icon: meta.pageMeta?.icon !== undefined ? resolveIcon(meta.pageMeta.icon) : undefined,
       isActive: meta.pageMeta?.isActive,
     });
   }
 
+  // 目录分组页面
   for (const [dirName, dirMetas] of groupedByDir) {
+    const dirConfig = config.dirMeta?.[dirName];
+    if (dirConfig?.hidden)
+      continue;
+
     const subItems: NavMainSubItem[] = [];
 
     for (const meta of dirMetas) {
       if (meta.pageMeta?.hidden)
         continue;
-      const resolvedTitle = meta.pageMeta?.title ?? config.titleMap?.[meta.path] ?? meta.title;
+      const resolvedTitle = meta.pageMeta?.title ?? meta.title;
       subItems.push({
         title: resolvedTitle,
         url: meta.path,
+        icon: meta.pageMeta?.icon !== undefined ? resolveIcon(meta.pageMeta.icon) : undefined,
       });
     }
 
     if (subItems.length === 0)
       continue;
 
-    const dirTitle = config.titleMap?.[dirName] ?? deriveTitleFromDirName(dirName);
+    const dirTitle = dirConfig?.title ?? deriveTitleFromDirName(dirName);
     items.push({
       title: dirTitle,
       url: '',
+      icon: dirConfig?.icon !== undefined ? resolveIcon(dirConfig.icon) : undefined,
+      isActive: dirConfig?.isActive,
       items: subItems,
     });
   }

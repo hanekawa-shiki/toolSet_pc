@@ -1,4 +1,33 @@
 /**
+ * 单个页面的菜单配置（按路由路径 key）
+ */
+interface PageMetaConfig {
+  /** 显示在侧边栏的标题 */
+  title?: string;
+  /** 侧边栏图标名（字符串，从 icon-map.tsx 解析） */
+  icon?: string;
+  /** 是否默认展开子菜单 */
+  isActive?: boolean;
+  /** 是否在侧边栏中隐藏此页面 */
+  hidden?: boolean;
+}
+
+/**
+ * 目录级（父级）菜单配置（按目录名 key）
+ * 例如 pages/dev/ 目录下有子页面时，配置 'dev' 来定义父级菜单
+ */
+interface DirMetaConfig {
+  /** 目录在侧边栏显示的标题 */
+  title?: string;
+  /** 目录在侧边栏显示的图标名 */
+  icon?: string;
+  /** 是否默认展开子菜单 */
+  isActive?: boolean;
+  /** 是否在侧边栏中隐藏此目录组 */
+  hidden?: boolean;
+}
+
+/**
  * 路由配置接口
  */
 interface RouterConfig {
@@ -25,13 +54,16 @@ interface RouterConfig {
   customRoutes?: import('react-router').RouteObject[];
 
   /**
-   * 菜单标题映射（路径或目录名 → 中文名称）
-   * 用于覆盖自动生成的英文标题
-   * 支持两种 key：
-   * - 路由路径（如 '/home'）→ 覆盖该页面的菜单标题
-   * - 目录名（如 'home'）→ 覆盖该文件夹的菜单组标题
+   * 页面级菜单配置（key 为路由路径，如 '/calendar'）
+   * 用于统一管理 title、icon、isActive、hidden 等菜单属性
    */
-  titleMap?: Record<string, string>;
+  pageMeta?: Record<string, PageMetaConfig>;
+
+  /**
+   * 目录级（父级）菜单配置（key 为 pages/ 下的目录名，如 'dev'）
+   * 用于配置文件夹分组的父级菜单项（标题、图标、是否展开等）
+   */
+  dirMeta?: Record<string, DirMetaConfig>;
 }
 
 /**
@@ -39,23 +71,6 @@ interface RouterConfig {
  */
 interface PageModule {
   default: import('react').ComponentType;
-}
-
-/**
- * 页面可选导出的元数据接口
- * 在页面文件中 export const meta = { title: 'xxx', icon: ... } 即可覆盖默认值
- */
-interface PageMeta {
-  /** 显示在侧边栏的标题 */
-  title?: string;
-  /** 侧边栏图标（React 节点） */
-  icon?: import('react').ReactNode;
-  /** 是否默认展开子菜单 */
-  isActive?: boolean;
-  /** 是否在侧边栏中隐藏此页面 */
-  hidden?: boolean;
-  /** 排序权重，数字越小越靠前 */
-  order?: number;
 }
 
 /**
@@ -68,8 +83,8 @@ interface AutoRouteMeta {
   path: string;
   /** 从文件名派生的标题（如 Home） */
   title: string;
-  /** 页面元数据（可选，来自页面导出的 meta） */
-  pageMeta?: PageMeta;
+  /** 页面元数据（可选，来自 pageMeta 配置） */
+  pageMeta?: PageMetaConfig;
   /** 动态导入函数 */
   loader: () => Promise<PageModule>;
 }

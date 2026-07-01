@@ -32,10 +32,8 @@ function NavMenuItem({ item }: { item: NavMainItem }) {
   const { isMobile, setOpenMobile } = useSidebar();
   const isParent = !!(item.items && item.items.length > 0);
 
-  // 判断当前菜单项或其子项是否激活
-  const isActive = isParent
-    ? (item.items?.some(sub => location.pathname === sub.url) ?? false)
-    : location.pathname === item.url;
+  // 父菜单项不因子项激活而高亮
+  const isActive = !isParent && location.pathname === item.url;
 
   const toggleCollapse = () => {
     triggerRef.current?.click();
@@ -82,6 +80,7 @@ function NavMenuItem({ item }: { item: NavMainItem }) {
                             className={({ isActive: active }) =>
                               active ? 'bg-sidebar-accent text-sidebar-accent-foreground' : ''}
                           >
+                            {subItem.icon}
                             <span>{subItem.title}</span>
                           </NavLink>
                         </SidebarMenuSubButton>
@@ -116,13 +115,6 @@ function NavMenuButton({
   onClick?: () => void;
   onNavigate?: () => void;
 }) {
-  const content = (
-    <>
-      {item.icon}
-      <span>{item.title}</span>
-    </>
-  );
-
   const handleClick = () => {
     onClick?.();
     onNavigate?.();
@@ -136,7 +128,8 @@ function NavMenuButton({
         onClick={handleClick}
         isActive={isActive}
       >
-        <span className="cursor-pointer select-none">{content}</span>
+        {item.icon}
+        {item.title}
       </SidebarMenuButton>
     );
   }
@@ -148,7 +141,8 @@ function NavMenuButton({
         className={({ isActive: active }) =>
           active ? 'bg-sidebar-accent text-sidebar-accent-foreground' : ''}
       >
-        {content}
+        {item.icon}
+        {item.title}
       </NavLink>
     </SidebarMenuButton>
   );

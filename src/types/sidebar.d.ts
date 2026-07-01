@@ -22,6 +22,8 @@ interface NavMainSubItem {
   title: string;
   /** 子菜单链接 URL */
   url: string;
+  /** 子菜单图标（可选） */
+  icon?: import('react').ReactNode;
 }
 
 /**

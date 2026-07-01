@@ -118,4 +118,9 @@ export default antfu({
     // 自定义规则
     'custom/trim-classname-whitespace': 'error',
   },
+  overrides: {
+    'src/router/index.tsx': {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
 });
