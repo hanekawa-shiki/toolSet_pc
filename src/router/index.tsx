@@ -1,6 +1,6 @@
 import type { RouteObject } from 'react-router';
-import { lazy } from 'react';
-import { Outlet } from 'react-router';
+import { lazy, Suspense } from 'react';
+import { Navigate, Outlet } from 'react-router';
 import Layout from '@/layout/index';
 import { getAutoRouteMetas } from './auto-routes';
 import config from './config';
@@ -27,8 +27,31 @@ function buildRoutes(): RouteObject[] {
     element: <NotFound />,
   };
 
-  // 合并自定义路由 + 404 兜底
-  const childRoutes = [...autoRoutes, ...(config.customRoutes || []), notFoundRoute];
+  // 根路径重定向到 /home
+  const rootRedirect: RouteObject = {
+    path: '/',
+    element: <Navigate to="/home" replace />,
+  };
+
+  // 首页路由（lazy 加载）
+  const HomePage = lazy(async () => import('@/pages/index'));
+  const homeRoute: RouteObject = {
+    path: '/home',
+    element: (
+      <Suspense>
+        <HomePage />
+      </Suspense>
+    ),
+  };
+
+  // 合并首页路由 + 重定向 + 自定义路由 + 404 兜底
+  const childRoutes = [
+    rootRedirect,
+    homeRoute,
+    ...autoRoutes,
+    ...(config.customRoutes || []),
+    notFoundRoute,
+  ];
 
   // 如果配置了布局组件，将所有路由作为布局的子路由
   if (config.layoutPath != null && config.layoutPath !== '') {

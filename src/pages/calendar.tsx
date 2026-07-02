@@ -440,8 +440,9 @@ export default function CalendarPage() {
   /** 切换年/月后，保持选中日期的「日」不变；若目标月不存在该日则取月末 */
   const adjustSelectedDate = useCallback(
     (newYear: number, newMonth: number) => {
-      if (selectedDate === null)
+      if (selectedDate === null) {
         return;
+      }
       const parsed = dayjs(selectedDate);
       const targetDay = parsed.date();
       const lastDay = new Date(newYear, newMonth + 1, 0).getDate();

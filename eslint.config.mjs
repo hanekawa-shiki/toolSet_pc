@@ -26,8 +26,9 @@ const classNameTrimPlugin = {
       create(context) {
         function check(node, rawString) {
           const collapsed = rawString.replace(/\s+/g, ' ').trim();
-          if (rawString === collapsed)
+          if (rawString === collapsed) {
             return;
+          }
 
           context.report({
             node,
@@ -47,11 +48,13 @@ const classNameTrimPlugin = {
 
         return {
           JSXAttribute(node) {
-            if (node.name.name !== 'className')
+            if (node.name.name !== 'className') {
               return;
+            }
             const value = node.value;
-            if (!value)
+            if (!value) {
               return;
+            }
 
             // className="foo  bar"
             if (value.type === 'Literal' && typeof value.value === 'string') {
@@ -117,6 +120,9 @@ export default antfu({
     'tailwindcss/no-unnecessary-arbitrary-value': 'warn',
     // 自定义规则
     'custom/trim-classname-whitespace': 'error',
+    // 强制所有 if/else/for/while 使用大括号
+    'antfu/curly': 'off',
+    'curly': ['error', 'all'],
   },
   overrides: {
     'src/router/index.tsx': {

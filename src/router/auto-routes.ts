@@ -8,14 +8,17 @@ function filePathToRoutePath(filePath: string): string {
   let relative = filePath.replace(/^.*\/pages\//, '').replace(/\.(?:tsx|ts|jsx|js)$/, '');
 
   relative = relative.replace(/\/index$/, '');
-  if (relative === 'index')
+  if (relative === 'index') {
     relative = '';
+  }
 
   relative = relative.replace(/\[([^\]]+)\]/g, (_m: string, param: string | undefined) => {
-    if (param === undefined || param === '')
+    if (param === undefined || param === '') {
       return _m;
-    if (param.startsWith('...'))
+    }
+    if (param.startsWith('...')) {
       return '*';
+    }
     return `:${param}`;
   });
 
@@ -62,8 +65,9 @@ function isIndexFile(filePath: string): boolean {
 function getFirstLevelDir(filePath: string): string | null {
   const relative = filePath.replace(/^.*\/pages\//, '');
   const segments = relative.split('/');
-  if (segments.length <= 1)
+  if (segments.length <= 1) {
     return null;
+  }
   return segments[0];
 }
 
@@ -83,10 +87,12 @@ export function getAutoRouteMetas(): AutoRouteMeta[] {
   const metas: AutoRouteMeta[] = [];
 
   for (const [filePath, importFn] of Object.entries(pageModules)) {
-    if (isExcluded(filePath, excludes))
+    if (isExcluded(filePath, excludes)) {
       continue;
-    if (isIndexFile(filePath))
+    }
+    if (isIndexFile(filePath)) {
       continue;
+    }
 
     const routePath = filePathToRoutePath(filePath);
     const pageMeta = getPageMetaByPath(routePath);
@@ -103,14 +109,17 @@ export function getAutoRouteMetas(): AutoRouteMeta[] {
   metas.sort((a, b) => {
     const pathA = a.path;
     const pathB = b.path;
-    if (pathA.includes('*'))
+    if (pathA.includes('*')) {
       return 1;
-    if (pathB.includes('*'))
+    }
+    if (pathB.includes('*')) {
       return -1;
+    }
     const segmentsA = pathA.split('/').length;
     const segmentsB = pathB.split('/').length;
-    if (segmentsA !== segmentsB)
+    if (segmentsA !== segmentsB) {
       return segmentsA - segmentsB;
+    }
     return pathA.localeCompare(pathB);
   });
 
@@ -139,8 +148,9 @@ export function getRouteMenuItems(): NavMainItem[] {
 
   // 顶级页面（不在任何目录下）
   for (const meta of topLevelFiles) {
-    if (meta.pageMeta?.hidden)
+    if (meta.pageMeta?.hidden) {
       continue;
+    }
     const resolvedTitle = meta.pageMeta?.title ?? meta.title;
     items.push({
       title: resolvedTitle,
@@ -153,14 +163,16 @@ export function getRouteMenuItems(): NavMainItem[] {
   // 目录分组页面
   for (const [dirName, dirMetas] of groupedByDir) {
     const dirConfig = config.dirMeta?.[dirName];
-    if (dirConfig?.hidden)
+    if (dirConfig?.hidden) {
       continue;
+    }
 
     const subItems: NavMainSubItem[] = [];
 
     for (const meta of dirMetas) {
-      if (meta.pageMeta?.hidden)
+      if (meta.pageMeta?.hidden) {
         continue;
+      }
       const resolvedTitle = meta.pageMeta?.title ?? meta.title;
       subItems.push({
         title: resolvedTitle,
@@ -169,8 +181,9 @@ export function getRouteMenuItems(): NavMainItem[] {
       });
     }
 
-    if (subItems.length === 0)
+    if (subItems.length === 0) {
       continue;
+    }
 
     const dirTitle = dirConfig?.title ?? deriveTitleFromDirName(dirName);
     items.push({

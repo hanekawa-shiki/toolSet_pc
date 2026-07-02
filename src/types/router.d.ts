@@ -6,6 +6,8 @@ interface PageMetaConfig {
   title?: string;
   /** 侧边栏图标名（字符串，从 icon-map.tsx 解析） */
   icon?: string;
+  /** 工具描述（用于首页展示） */
+  description?: string;
   /** 是否默认展开子菜单 */
   isActive?: boolean;
   /** 是否在侧边栏中隐藏此页面 */
