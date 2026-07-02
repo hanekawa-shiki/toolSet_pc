@@ -140,20 +140,6 @@ const holidaysByYear: Record<number, Holiday[]> = {
 };
 
 /**
- * 获取指定日期的节假日信息
- * @param month 日历月份（0-11）
- * @param day 日历日（1-31）
- * @param year 年份
- * @returns 节假日名称或空字符串
- */
-export function getHolidayName(month: number, day: number, year: number): string {
-  const holidays = holidaysByYear[year] ?? [];
-  const md = `${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-  const holiday = holidays.find(h => h.date === md);
-  return holiday !== undefined ? holiday.name : '';
-}
-
-/**
  * 获取指定日期的完整节假日信息
  * @returns Holiday 对象或 undefined
  */
